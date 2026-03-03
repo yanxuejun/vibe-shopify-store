@@ -50,17 +50,24 @@ const MOCK_PRODUCTS: ShopifyProduct[] = [
 ];
 
 export default async function Home() {
+  console.log('[Home] Rendering page...');
   let products: ShopifyProduct[] = [];
 
   try {
-    // Only attempt to fetch if domain is set
-    if (process.env.SHOPIFY_STORE_DOMAIN && process.env.SHOPIFY_STORE_DOMAIN !== 'your-store.myshopify.com') {
+    const domain = process.env.SHOPIFY_STORE_DOMAIN;
+    console.log(`[Home] Shopify Domain: ${domain || 'not set'}`);
+
+    // Only attempt to fetch if domain is set and matched
+    if (domain && domain !== 'your-store.myshopify.com') {
+      console.log('[Home] Fetching real products from Shopify...');
       products = await getProducts();
+      console.log(`[Home] Successfully fetched ${products.length} products.`);
     } else {
+      console.log('[Home] Using mock products (Shopify not configured).');
       products = MOCK_PRODUCTS;
     }
-  } catch (error) {
-    console.error("Failed to fetch products, using mocks:", error);
+  } catch (error: any) {
+    console.error("[Home] Failed to fetch products:", error.message || error);
     products = MOCK_PRODUCTS;
   }
 
