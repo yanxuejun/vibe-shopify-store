@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export const runtime = 'edge';
 
 export default function NotFound() {
@@ -7,12 +9,12 @@ export default function NotFound() {
             <p className="text-gray-500 mb-8 text-center max-w-md">
                 The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
             </p>
-            <a
+            <Link
                 href="/"
                 className="rounded-full bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-zinc-800 transition-all"
             >
                 Return Home
-            </a>
+            </Link>
         </div>
     );
 }

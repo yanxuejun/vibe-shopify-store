@@ -1,6 +1,8 @@
+import { ShopifyProduct } from './types';
+
 export type ShopifyFetchParams = {
   query: string;
-  variables?: Record<string, any>;
+  variables?: Record<string, unknown>;
   cache?: RequestCache;
   tags?: string[];
 };
@@ -34,7 +36,7 @@ export async function shopifyFetch<T>({
       ...(variables && { variables })
     }),
     cache,
-    // @ts-ignore - duplex is needed for some edge runners
+    // @ts-expect-error - duplex is needed for some edge runners
     duplex: 'half',
     ...(tags && { next: { tags } })
   });
@@ -60,14 +62,15 @@ export async function shopifyFetch<T>({
       status: result.status,
       body
     };
-  } catch (e: any) {
-    console.error('[Shopify] Fetch encountered an error or timeout:', e.message || e);
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : String(e);
+    console.error('[Shopify] Fetch encountered an error or timeout:', errorMessage);
     throw e;
   }
 }
 
 export async function getProducts() {
-  const res = await shopifyFetch<any>({
+  const res = await shopifyFetch<{ data: { products: { edges: { node: ShopifyProduct }[] } } }>({
     query: `
       query getProducts {
         products(first: 10) {
@@ -98,5 +101,5 @@ export async function getProducts() {
     `
   });
 
-  return res.body.data.products.edges.map((edge: any) => edge.node);
+  return res.body.data.products.edges.map((edge) => edge.node);
 }

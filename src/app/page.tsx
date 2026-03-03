@@ -67,8 +67,9 @@ export default async function Home() {
       console.log('[Home] Using mock products (Shopify not configured).');
       products = MOCK_PRODUCTS;
     }
-  } catch (error: any) {
-    console.error("[Home] Failed to fetch products:", error.message || error);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("[Home] Failed to fetch products:", errorMessage);
     products = MOCK_PRODUCTS;
   }
 
@@ -99,7 +100,7 @@ export default async function Home() {
           <div className="max-w-xl">
             <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">The Quality Manifesto</h2>
             <p className="mt-6 text-lg text-zinc-400 capitalize">
-              Sustainability isn't just a buzzword for us. It's the core of every stitch, every curve, and every material we source.
+              Sustainability isn&apos;t just a buzzword for us. It&apos;s the core of every stitch, every curve, and every material we source.
             </p>
             <button className="mt-10 rounded-full bg-white px-8 py-4 text-sm font-semibold text-black hover:bg-zinc-200 transition-colors">
               Learn Our Process
