@@ -17,11 +17,11 @@ export async function shopifyFetch<T>({
   tags
 }: ShopifyFetchParams): Promise<{ status: number; body: T } | never> {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+  const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s timeout to prevent hanging
 
   try {
-    if (!domain || domain === 'your-store.myshopify.com') {
-      console.log('Shopify domain is not configured correctly in environment variables.');
+    if (!domain || domain === 'your-store.myshopify.com' || `${domain}`.includes('undefined')) {
+      console.log('[Shopify] Domain is missing or invalid. Check Cloudflare environment variables.');
       throw new Error('Invalid Shopify Domain');
     }
 
