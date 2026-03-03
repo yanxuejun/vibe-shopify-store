@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 import Navbar from "@/components/Navbar";
 
 export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: "VIBE | Premium Headless Shopify Store",

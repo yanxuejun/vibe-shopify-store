@@ -4,6 +4,7 @@ import { getProducts } from "@/lib/shopify";
 import { ShopifyProduct } from "@/lib/shopify/types";
 
 export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 
 // Mock data for demonstration when Shopify credentials are not set
 const MOCK_PRODUCTS: ShopifyProduct[] = [
