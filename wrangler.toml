@@ -1,0 +1,6 @@
+name = "vibe-shopify-store"
+compatibility_date = "2024-11-18"
+compatibility_flags = ["nodejs_compat"]
+
+[site]
+bucket = ".next-on-pages"
