@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VIBE Shopify Storefront
 
-## Getting Started
+A high-performance, headless Shopify storefront built with **Next.js**, **Tailwind CSS**, and deployed on **Cloudflare Pages**.
 
-First, run the development server:
+## 🚀 Features
+
+- **Headless Shopify**: Powered by Shopify Storefront API.
+- **Edge Runtime**: Optimized for Cloudflare Pages (next-on-pages).
+- **Modern UI**: Premium design using Tailwind CSS v4 and Lucide icons.
+- **Type Safe**: Fully typed with TypeScript.
+
+## 🛠️ Getting Started
+
+### 1. Prerequisites
+
+- A Shopify store and a Storefront Access Token.
+- Cloudflare account (for deployment).
+
+### 2. Environment Variables
+
+Create a `.env.local` file (one has been prepared for you) and add your Shopify credentials:
+
+```bash
+SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
+SHOPIFY_STOREFRONT_ACCESS_TOKEN=your-access-token
+```
+
+### 3. Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 4. Cloudflare Pages Build & Deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To build the project for Cloudflare Pages:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run pages:build
+```
 
-## Learn More
+This will generate a `.next-on-pages` directory.
 
-To learn more about Next.js, take a look at the following resources:
+To test locally with Wrangler:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run pages:dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📂 Project Structure
 
-## Deploy on Vercel
+- `src/app`: Next.js App Router pages and layouts.
+- `src/components`: Reusable UI components.
+- `src/lib/shopify`: Shopify API client and utilities.
+- `src/lib/utils.ts`: General utilities (Tailwind merge, etc.).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📝 License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

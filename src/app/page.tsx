@@ -1,65 +1,105 @@
-import Image from "next/image";
+import Hero from "@/components/Hero";
+import ProductCard from "@/components/ProductCard";
+import { getProducts } from "@/lib/shopify";
+import { ShopifyProduct } from "@/lib/shopify/types";
 
-export default function Home() {
+export const runtime = 'edge';
+
+// Mock data for demonstration when Shopify credentials are not set
+const MOCK_PRODUCTS: ShopifyProduct[] = [
+  {
+    id: "1",
+    title: "Premium Essential Tee",
+    handle: "essential-tee",
+    description: "Our signature tee, redesigned for 2024.",
+    images: {
+      edges: [{ node: { url: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=1000&auto=format&fit=crop", altText: "Tee" } }]
+    },
+    priceRange: { minVariantPrice: { amount: "45.00", currencyCode: "USD" } }
+  },
+  {
+    id: "2",
+    title: "Minimalist Watch",
+    handle: "minimalist-watch",
+    description: "Timeless design for the modern era.",
+    images: {
+      edges: [{ node: { url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop", altText: "Watch" } }]
+    },
+    priceRange: { minVariantPrice: { amount: "180.00", currencyCode: "USD" } }
+  },
+  {
+    id: "3",
+    title: "Classic Leather Totebag",
+    handle: "leather-tote",
+    description: "Spacious and elegant leather tote.",
+    images: {
+      edges: [{ node: { url: "https://images.unsplash.com/photo-1584917033904-491a84b2efbd?q=80&w=1000&auto=format&fit=crop", altText: "Tote" } }]
+    },
+    priceRange: { minVariantPrice: { amount: "120.00", currencyCode: "USD" } }
+  },
+  {
+    id: "4",
+    title: "Utility Backpack",
+    handle: "utility-backpack",
+    description: "Everything you need, everywhere you go.",
+    images: {
+      edges: [{ node: { url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1000&auto=format&fit=crop", altText: "Backpack" } }]
+    },
+    priceRange: { minVariantPrice: { amount: "85.00", currencyCode: "USD" } }
+  }
+];
+
+export default async function Home() {
+  let products: ShopifyProduct[] = [];
+
+  try {
+    // Only attempt to fetch if domain is set
+    if (process.env.SHOPIFY_STORE_DOMAIN && process.env.SHOPIFY_STORE_DOMAIN !== 'your-store.myshopify.com') {
+      products = await getProducts();
+    } else {
+      products = MOCK_PRODUCTS;
+    }
+  } catch (error) {
+    console.error("Failed to fetch products, using mocks:", error);
+    products = MOCK_PRODUCTS;
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
+    <div className="flex flex-col gap-16 pb-24">
+      <Hero />
+
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-black">New Arrivals</h2>
+            <p className="mt-2 text-gray-500">The latest pieces from our studio.</p>
+          </div>
+          <a href="/search" className="text-sm font-semibold text-black hover:underline underline-offset-4">
+            View All
           </a>
         </div>
-      </main>
+
+        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-zinc-900 py-24 text-white overflow-hidden relative">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-xl">
+            <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">The Quality Manifesto</h2>
+            <p className="mt-6 text-lg text-zinc-400 capitalize">
+              Sustainability isn't just a buzzword for us. It's the core of every stitch, every curve, and every material we source.
+            </p>
+            <button className="mt-10 rounded-full bg-white px-8 py-4 text-sm font-semibold text-black hover:bg-zinc-200 transition-colors">
+              Learn Our Process
+            </button>
+          </div>
+        </div>
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1/3 h-full bg-zinc-800/50 -rotate-12 translate-x-12 blur-3xl" />
+      </section>
     </div>
   );
 }
