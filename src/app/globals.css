@@ -1,40 +1,71 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Inter';
+  src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F9F8F6;
+  --foreground: #1A1A1A;
+  --border: #E5E2DD;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-border-subtle: var(--border);
+  --font-inter: 'Inter', sans-serif;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Fabric-inspired Typography */
+h1, h2, h3, h4, h5, h6 {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+
+/* Minimal Line Style */
+.border-b-fabric {
+  border-bottom: 1px solid var(--border);
+}
+
+.border-fabric {
+  border: 1px solid var(--border);
+}
+
+/* Selection style */
 ::selection {
-  background-color: black;
-  color: white;
+  background-color: var(--foreground);
+  color: var(--background);
 }
 
+/* Smooth Scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-@layer base {
-  * {
-    @apply border-gray-200;
-  }
+/* Custom Scrollbar for Fabric feel */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C4C1BC;
 }

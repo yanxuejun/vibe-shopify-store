@@ -12,11 +12,14 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "dataforseo-mcp-server": "^2.8.7",
     "lucide-react": "^0.576.0",
     "next": "15.1.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "tailwind-merge": "^3.5.0"
+    "shopify-mcp": "^1.0.8",
+    "tailwind-merge": "^3.5.0",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.16",

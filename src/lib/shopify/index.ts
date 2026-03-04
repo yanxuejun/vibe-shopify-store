@@ -1,4 +1,11 @@
-import { ShopifyProduct } from './types';
+import {
+  ShopifyProduct,
+  ShopifyCollection,
+  Cart,
+  MenuItem,
+  Image,
+  Money
+} from './types';
 
 export type ShopifyFetchParams = {
   query: string;
@@ -13,7 +20,6 @@ export async function shopifyFetch<T>({
   cache = 'no-store',
   tags
 }: ShopifyFetchParams): Promise<{ status: number; body: T } | never> {
-  // 1. 将环境变量读取移入函数内部，防止全局作用域污染或未定义
   const domain = process.env.SHOPIFY_STORE_DOMAIN;
   const storefrontAccessToken = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN;
   const endpoint = `https://${domain}/api/2024-01/graphql.json`;
@@ -23,9 +29,7 @@ export async function shopifyFetch<T>({
     throw new Error('Invalid Shopify Domain');
   }
 
-  console.log(`[Shopify] Starting fetch to: ${endpoint}`);
-
-  const fetchPromise = fetch(endpoint, {
+  const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -41,58 +45,135 @@ export async function shopifyFetch<T>({
     ...(tags && { next: { tags } })
   });
 
-  // 2. 使用 Promise.race 制作一个 5 秒的强制超时，防止无限挂起
-  const timeoutPromise = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('Shopify Fetch Timeout')), 5000)
-  );
+  const body = await res.json();
 
-  try {
-    const result = (await Promise.race([fetchPromise, timeoutPromise])) as Response;
-
-    console.log(`[Shopify] Received response status: ${result.status}`);
-
-    const body = await result.json();
-
-    if (body.errors) {
-      console.error('[Shopify] API errors caught:', JSON.stringify(body.errors));
-      throw body.errors[0];
-    }
-
-    return {
-      status: result.status,
-      body
-    };
-  } catch (e: unknown) {
-    const errorMessage = e instanceof Error ? e.message : String(e);
-    console.error('[Shopify] Fetch encountered an error or timeout:', errorMessage);
-    throw e;
+  if (body.errors) {
+    throw body.errors[0];
   }
+
+  return {
+    status: res.status,
+    body
+  };
 }
 
-export async function getProducts() {
+const PRODUCT_FRAGMENT = `
+  fragment product on Product {
+    id
+    handle
+    availableForSale
+    title
+    description
+    descriptionHtml
+    options {
+      id
+      name
+      values
+    }
+    priceRange {
+      maxVariantPrice {
+        amount
+        currencyCode
+      }
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+    }
+    variants(first: 250) {
+      edges {
+        node {
+          id
+          title
+          availableForSale
+          selectedOptions {
+            name
+            value
+          }
+          price {
+            amount
+            currencyCode
+          }
+          image {
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
+    }
+    featuredImage {
+      url
+      altText
+      width
+      height
+    }
+    images(first: 20) {
+      edges {
+        node {
+          url
+          altText
+          width
+          height
+        }
+      }
+    }
+  }
+`;
+
+export async function getProducts(query?: string) {
   const res = await shopifyFetch<{ data: { products: { edges: { node: ShopifyProduct }[] } } }>({
     query: `
-      query getProducts {
-        products(first: 10) {
+      query getProducts($query: String) {
+        products(first: 20, query: $query) {
+          edges {
+            node {
+              ...product
+            }
+          }
+        }
+      }
+      ${PRODUCT_FRAGMENT}
+    `,
+    variables: { query }
+  });
+
+  return res.body.data.products.edges.map((edge) => edge.node);
+}
+
+export async function getProduct(handle: string) {
+  const res = await shopifyFetch<{ data: { product: ShopifyProduct } }>({
+    query: `
+      query getProduct($handle: String!) {
+        product(handle: $handle) {
+          ...product
+        }
+      }
+      ${PRODUCT_FRAGMENT}
+    `,
+    variables: { handle }
+  });
+
+  return res.body.data.product;
+}
+
+export async function getCollections() {
+  const res = await shopifyFetch<{ data: { collections: { edges: { node: ShopifyCollection }[] } } }>({
+    query: `
+      query getCollections {
+        collections(first: 100) {
           edges {
             node {
               id
-              title
               handle
+              title
               description
-              images(first: 1) {
-                edges {
-                  node {
-                    url
-                    altText
-                  }
-                }
-              }
-              priceRange {
-                minVariantPrice {
-                  amount
-                  currencyCode
-                }
+              image {
+                url
+                altText
+                width
+                height
               }
             }
           }
@@ -101,5 +182,196 @@ export async function getProducts() {
     `
   });
 
-  return res.body.data.products.edges.map((edge) => edge.node);
+  return res.body.data.collections.edges.map((edge) => edge.node);
+}
+
+export async function getCollection(handle: string) {
+  const res = await shopifyFetch<{ data: { collection: ShopifyCollection } }>({
+    query: `
+      query getCollection($handle: String!) {
+        collection(handle: $handle) {
+          id
+          handle
+          title
+          description
+          products(first: 50) {
+            edges {
+              node {
+                ...product
+              }
+            }
+          }
+        }
+      }
+      ${PRODUCT_FRAGMENT}
+    `,
+    variables: { handle }
+  });
+
+  return res.body.data.collection;
+}
+
+export async function getMenu(handle: string = 'main-menu'): Promise<MenuItem[]> {
+  const res = await shopifyFetch<{ data: { menu: { items: MenuItem[] } } }>({
+    query: `
+      query getMenu($handle: String!) {
+        menu(handle: $handle) {
+          items {
+            title
+            url
+            items {
+              title
+              url
+            }
+          }
+        }
+      }
+    `,
+    variables: { handle }
+  });
+
+  return res.body.data.menu?.items || [];
+}
+
+const CART_FRAGMENT = `
+  fragment cart on Cart {
+    id
+    checkoutUrl
+    totalQuantity
+    cost {
+      subtotalAmount {
+        amount
+        currencyCode
+      }
+      totalAmount {
+        amount
+        currencyCode
+      }
+      totalTaxAmount {
+        amount
+        currencyCode
+      }
+    }
+    lines(first: 100) {
+      edges {
+        node {
+          id
+          quantity
+          cost {
+            totalAmount {
+              amount
+              currencyCode
+            }
+          }
+          merchandise {
+            ... on ProductVariant {
+              id
+              title
+              selectedOptions {
+                name
+                value
+              }
+              product {
+                title
+                handle
+              }
+              image {
+                url
+                altText
+                width
+                height
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export async function createCart(): Promise<Cart> {
+  const res = await shopifyFetch<{ data: { cartCreate: { cart: Cart } } }>({
+    query: `
+      mutation cartCreate {
+        cartCreate {
+          cart {
+            ...cart
+          }
+        }
+      }
+      ${CART_FRAGMENT}
+    `
+  });
+
+  return res.body.data.cartCreate.cart;
+}
+
+export async function getCart(cartId: string): Promise<Cart | undefined> {
+  const res = await shopifyFetch<{ data: { cart: Cart } }>({
+    query: `
+      query getCart($cartId: ID!) {
+        cart(id: $cartId) {
+          ...cart
+        }
+      }
+      ${CART_FRAGMENT}
+    `,
+    variables: { cartId }
+  });
+
+  return res.body.data.cart;
+}
+
+export async function addToCart(cartId: string, lines: { merchandiseId: string; quantity: number }[]): Promise<Cart> {
+  const res = await shopifyFetch<{ data: { cartLinesAdd: { cart: Cart } } }>({
+    query: `
+      mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+        cartLinesAdd(cartId: $cartId, lines: $lines) {
+          cart {
+            ...cart
+          }
+        }
+      }
+      ${CART_FRAGMENT}
+    `,
+    variables: { cartId, lines }
+  });
+
+  return res.body.data.cartLinesAdd.cart;
+}
+
+export async function removeFromCart(cartId: string, lineIds: string[]): Promise<Cart> {
+  const res = await shopifyFetch<{ data: { cartLinesRemove: { cart: Cart } } }>({
+    query: `
+      mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+        cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+          cart {
+            ...cart
+          }
+        }
+      }
+      ${CART_FRAGMENT}
+    `,
+    variables: { cartId, lineIds }
+  });
+
+  return res.body.data.cartLinesRemove.cart;
+}
+
+export async function updateCart(cartId: string, lines: { id: string; quantity: number }[]): Promise<Cart> {
+  const res = await shopifyFetch<{ data: { cartLinesUpdate: { cart: Cart } } }>({
+    query: `
+      mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+        cartLinesUpdate(cartId: $cartId, lines: $lines) {
+          cart {
+            ...cart
+          }
+        }
+      }
+      ${CART_FRAGMENT}
+    `,
+    variables: { cartId, lines }
+  });
+
+  return res.body.data.cartLinesUpdate.cart;
 }

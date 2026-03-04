@@ -2,49 +2,53 @@ import Link from 'next/link';
 
 export default function Hero() {
     return (
-        <div className="relative overflow-hidden bg-white py-16 sm:py-24 lg:py-32">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="relative z-10 lg:w-full lg:max-w-2xl">
-                    <div className="text-left">
-                        <span className="inline-flex items-center rounded-full bg-black px-3 py-1 text-xs font-semibold text-white mb-6">
-                            New Season 2024
-                        </span>
-                        <h1 className="text-5xl font-extrabold tracking-tight text-black sm:text-7xl">
-                            Elevate Your <br />
-                            <span className="text-gray-400 italic">Daily Vibe.</span>
-                        </h1>
-                        <p className="mt-8 text-lg leading-8 text-gray-600">
-                            Discover our curated collection of premium products designed for modern living.
-                            Minimalist aesthetics meets functional excellence.
-                        </p>
-                        <div className="mt-10 flex items-center gap-x-6">
-                            <Link
-                                href="/search"
-                                className="rounded-full bg-black px-8 py-4 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black transition-all"
-                            >
-                                Shop Collection
-                            </Link>
-                            <Link href="/about" className="text-sm font-semibold leading-6 text-black">
-                                Our Story <span aria-hidden="true">→</span>
-                            </Link>
-                        </div>
+        <section className="relative h-screen min-h-[700px] w-full overflow-hidden bg-[#F3F2F0]">
+            {/* Background Image / Texture */}
+            <div className="absolute inset-0 z-0">
+                <img
+                    src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=2000"
+                    alt="Refined Texture"
+                    className="h-full w-full object-cover opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/20" />
+            </div>
+
+            {/* Content */}
+            <div className="relative z-10 container mx-auto px-6 h-full flex flex-col justify-center items-center text-center">
+                <div className="space-y-8 max-w-4xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-foreground/40 block mb-4">
+                        New Series: Minimalist Textures
+                    </span>
+                    <h1 className="text-5xl md:text-8xl font-extralight uppercase tracking-[0.1em] leading-tight">
+                        ELEVATED <br />
+                        <span className="italic">SIMPLICITY</span>
+                    </h1>
+                    <p className="text-xs md:text-sm font-medium uppercase tracking-[0.2em] text-foreground/60 max-w-xl mx-auto leading-loose">
+                        Exploration of form and material. Purposefully designed for those who appreciate the silent details.
+                    </p>
+                    <div className="pt-8">
+                        <Link
+                            href="/collections/all"
+                            className="inline-block bg-foreground text-background text-[10px] font-bold uppercase tracking-[0.3em] px-12 py-5 hover:bg-foreground/90 transition-all duration-300 transform hover:-translate-y-1"
+                        >
+                            Explore Collection
+                        </Link>
                     </div>
                 </div>
             </div>
-            <div className="mt-16 sm:mt-24 lg:absolute lg:right-0 lg:top-0 lg:mt-0 lg:h-full lg:w-1/2">
-                <div className="h-full w-full bg-gray-100 flex items-center justify-center relative overflow-hidden">
-                    {/* Using a placeholder-like aesthetic for now, can be replaced by real Image */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-gray-200 to-gray-50 opacity-50" />
-                    <div className="relative z-10 text-center">
-                        <div className="w-64 h-80 bg-white rounded-3xl shadow-2xl rotate-3 transform hover:rotate-0 transition-transform duration-500 flex items-center justify-center p-8">
-                            <div className="w-full h-full bg-gray-50 rounded-xl border-dashed border-2 border-gray-200" />
-                        </div>
-                        <div className="absolute -left-12 top-20 w-48 h-64 bg-white rounded-3xl shadow-2xl -rotate-6 transform hover:rotate-0 transition-transform duration-500 flex items-center justify-center p-6 border border-gray-100">
-                            <div className="w-full h-full bg-gray-50 rounded-xl border-dashed border-2 border-gray-200" />
-                        </div>
-                    </div>
-                </div>
+
+            {/* Scroll Indicator */}
+            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-4 animate-bounce opacity-40">
+                <span className="text-[8px] font-bold uppercase tracking-[0.4em]">Scroll</span>
+                <div className="w-px h-12 bg-foreground" />
             </div>
-        </div>
+
+            {/* Side Label */}
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center space-y-8 select-none">
+                <span className="text-[8px] font-bold uppercase tracking-[0.5em] rotate-90 whitespace-nowrap opacity-20 origin-center">
+                    VIBE FABRIC COLLECTION 2024
+                </span>
+            </div>
+        </section>
     );
 }
