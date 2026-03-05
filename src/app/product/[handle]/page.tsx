@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getProduct, getProducts } from '@/lib/shopify';
+import { getProduct } from '@/lib/shopify';
 import AddToCart from './AddToCart';
 import { ShopifyProduct } from '@/lib/shopify/types';
 

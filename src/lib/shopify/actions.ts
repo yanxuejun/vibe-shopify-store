@@ -1,12 +1,13 @@
 'use server';
 
-import { createCart, addToCart, getCart, updateCart, removeFromCart } from './index';
+import { createCart, addToCart } from './index';
+import { CartItem } from '../store/useCartStore';
 
 export async function createCartAction() {
     return await createCart();
 }
 
-export async function getCheckoutUrl(cartId: string | null, items: any[]) {
+export async function getCheckoutUrl(cartId: string | null, items: CartItem[]) {
     if (!items.length) return null;
 
     try {

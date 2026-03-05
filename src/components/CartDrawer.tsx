@@ -131,7 +131,7 @@ export default function CartDrawer() {
 }
 
 function CheckoutButton() {
-    const { items, cartId, setCartId } = useCartStore();
+    const { items, cartId } = useCartStore();
     const [loading, setLoading] = React.useState(false);
 
     const handleCheckout = async () => {

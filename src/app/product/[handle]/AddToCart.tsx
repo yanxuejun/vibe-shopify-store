@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShopifyProduct, ProductVariant } from '@/lib/shopify/types';
+import { ShopifyProduct } from '@/lib/shopify/types';
 import { useCartStore } from '@/lib/store/useCartStore';
 
 export default function AddToCart({ product }: { product: ShopifyProduct }) {
