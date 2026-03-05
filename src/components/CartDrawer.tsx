@@ -122,12 +122,43 @@ export default function CartDrawer() {
                                 }).format(subtotal)}
                             </p>
                         </div>
-                        <button className="w-full bg-foreground text-background py-4 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-foreground/90 transition-colors">
-                            Checkout
-                        </button>
+                        <CheckoutButton />
                     </div>
                 )}
             </div>
         </div>
+    );
+}
+
+function CheckoutButton() {
+    const { items, cartId, setCartId } = useCartStore();
+    const [loading, setLoading] = React.useState(false);
+
+    const handleCheckout = async () => {
+        setLoading(true);
+        try {
+            const { getCheckoutUrl } = await import('@/lib/shopify/actions');
+            const url = await getCheckoutUrl(cartId, items);
+            if (url) {
+                window.location.href = url;
+            } else {
+                alert('Checkout currently unavailable. Please try again later.');
+            }
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert('An error occurred during checkout. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <button
+            onClick={handleCheckout}
+            disabled={loading}
+            className="w-full bg-foreground text-background py-4 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-foreground/90 transition-colors disabled:opacity-50"
+        >
+            {loading ? 'Processing...' : 'Checkout'}
+        </button>
     );
 }
