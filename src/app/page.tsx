@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Hero from "@/components/Hero";
 import ProductCard from "@/components/ProductCard";
 import { getProducts } from "@/lib/shopify";
@@ -103,7 +104,7 @@ export default async function Home() {
         <div className="container mx-auto flex flex-col items-center text-center">
           <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-foreground/40 mb-12">THE MANIFESTO</span>
           <h2 className="text-4xl md:text-7xl font-extralight uppercase tracking-[0.1em] leading-tight max-w-5xl mb-12 italic">
-            "WE BELIEVE IN THE SILENT POWER OF REFINED TEXTURES AND MINIMALIST FORM."
+            &quot;WE BELIEVE IN THE SILENT POWER OF REFINED TEXTURES AND MINIMALIST FORM.&quot;
           </h2>
           <div className="w-px h-24 bg-foreground/20 mb-12" />
           <p className="text-xs uppercase tracking-[0.2em] font-medium text-foreground/60 max-w-xl leading-loose">
@@ -119,10 +120,12 @@ export default async function Home() {
       <section className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
           <div className="relative aspect-[4/5] bg-[#F3F2F0]">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80"
               alt="Texture"
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              unoptimized
             />
           </div>
           <div className="space-y-8">

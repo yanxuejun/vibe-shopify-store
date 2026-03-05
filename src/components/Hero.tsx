@@ -1,14 +1,17 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Hero() {
     return (
         <section className="relative h-screen min-h-[700px] w-full overflow-hidden bg-[#F3F2F0]">
             {/* Background Image / Texture */}
             <div className="absolute inset-0 z-0">
-                <img
+                <Image
                     src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=2000"
                     alt="Refined Texture"
-                    className="h-full w-full object-cover opacity-80"
+                    fill
+                    className="object-cover opacity-80"
+                    unoptimized
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/20" />
             </div>

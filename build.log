@@ -1,0 +1,28 @@
+
+> vibe-shopify-store@0.1.0 build
+> next build
+
+   ▲ Next.js 15.1.0
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+ ⚠ Using edge runtime on a page currently disables static generation for that page
+   Generating static pages (0/3) ...
+ ✓ Generating static pages (3/3)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ƒ /                                    184 B           114 kB
+└ ƒ /_not-found                          137 B           106 kB
++ First Load JS shared by all            105 kB
+  ├ chunks/4bd1b696-eafe63c2999b703a.js  52.9 kB
+  ├ chunks/517-8eef8e25077d314f.js       50.5 kB
+  └ other shared chunks (total)          2 kB
+
+
+ƒ  (Dynamic)  server-rendered on demand
+

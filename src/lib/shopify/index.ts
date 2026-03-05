@@ -2,9 +2,7 @@ import {
   ShopifyProduct,
   ShopifyCollection,
   Cart,
-  MenuItem,
-  Image,
-  Money
+  MenuItem
 } from './types';
 
 export type ShopifyFetchParams = {
